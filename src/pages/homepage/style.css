@@ -37,7 +37,30 @@
 
 .favs {
   display: flex;
-  gap: 25px;
-  overflow: auto;
-  margin-bottom: 30px;
+  overflow-x: auto;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.favs > * {
+  flex-shrink: 0;
+  max-width: 350px;
+}
+
+.search-fav {
+  display: flex;
+  justify-content: center;
+}
+
+.search-fav input {
+  width: 25%;
+  height: 60px;
+  margin-top: 20px;
+  padding: 0px 10px;
+  border: none;
+  outline: none;
+  background-color: #efeef0;
+  color: black;
+  border-radius: 20px;
+  font-size: 24px;
 }

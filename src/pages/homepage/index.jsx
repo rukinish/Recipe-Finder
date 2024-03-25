@@ -1,9 +1,26 @@
 import Search from "../../components/search";
 import Header from "../../components/header/header";
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useReducer } from "react";
 import "./style.css";
 import RecipeItem from "../../components/recipeItem/recipe";
 import FavItem from "../../components/FavItem/FavItem";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "filterFavourites":
+      return {
+        ...state,
+        filteredValue: action.value,
+      };
+
+    default:
+      return state;
+  }
+};
+
+const initialState = {
+  filteredValue: "",
+};
 
 const Homepage = () => {
   //loading state
@@ -17,6 +34,9 @@ const Homepage = () => {
 
   //state for api is success or not
   const [apiCalledSuccess, setapiCalledSuccess] = useState(false);
+
+  //use reducer functionality
+  const [filteredState, dispatch] = useReducer(reducer, initialState);
 
   const getDataFromSearch = (getData) => {
     //keep the loading state as true before we call api
@@ -79,6 +99,10 @@ const Homepage = () => {
     setFav(extractFavFromLocal);
   }, []);
 
+  const filteredFavItem = fav.filter((item) => 
+  item.title.toLowerCase().includes(filteredState.filteredValue)
+  );
+
   return (
     <div className="Homepage">
       <Header />
@@ -87,14 +111,23 @@ const Homepage = () => {
         apiCalledSuccess={apiCalledSuccess}
         setapiCalledSuccess={setapiCalledSuccess}
       />
-
+      {/* fav search bar */}
+      <div className="search-fav">
+        <input
+          onChange={(event) =>
+            dispatch({ type: "filterFavourites", value: event.target.value })
+          }
+          value={filteredState.filteredValue}
+          name="searchfav"
+          placeholder="search favourites"
+        />
+      </div>
       {/* show fav */}
-
       <div className="fav-wrapper">
         <h1>Favourites</h1>
         <div className="favs">
-          {fav && fav.length > 0
-            ? fav.map((item) => {
+          {filteredFavItem && filteredFavItem.length > 0
+            ? filteredFavItem.map((item) => {
                 return (
                   <FavItem
                     removeFromFav={() => removeFromFav(item.id)}
