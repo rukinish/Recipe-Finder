@@ -15,6 +15,9 @@ const Homepage = () => {
   //get fav state
   const [fav, setFav] = useState([]);
 
+  //reset search
+  
+
   const getDataFromSearch = (getData) => {
     //keep the loading state as true before we call api
     setLoadingState(true);
@@ -59,6 +62,15 @@ const Homepage = () => {
     }
   };
 
+  //remove fav
+  const removeFromFav = (getCurrentId) => {
+    let copyFav = [...fav];
+    copyFav = copyFav.filter((item) => item.id !== getCurrentId);
+
+    setFav(copyFav);
+    localStorage.setItem("favourites", JSON.stringify(copyFav));
+  };
+
   //user h0ok get data from local storage
   useEffect(() => {
     const extractFavFromLocal =
@@ -79,7 +91,12 @@ const Homepage = () => {
           {fav && fav.length > 0
             ? fav.map((item) => {
                 return (
-                  <FavItem id={item.id} image={item.image} title={item.title} />
+                  <FavItem
+                    removeFromFav={() => removeFromFav(item.id)}
+                    id={item.id}
+                    image={item.image}
+                    title={item.title}
+                  />
                 );
               })
             : null}
