@@ -1,37 +1,51 @@
-import React, {useState} from 'react'
-import './style.css'
+import React, { useEffect, useState } from "react";
+import "./style.css";
 
-const Search = (props)=> {
+const Search = (props) => {
+  const { getDataFromSearch, apiCalledSuccess, setapiCalledSuccess } = props;
 
-  const {getDataFromSearch} = props;
-
-  const [inputValue, setInputValue] = useState('')
+  const [inputValue, setInputValue] = useState("");
 
   const handleInputVal = (event) => {
-    const {value} = event.target;
+    const { value } = event.target;
 
     //set the updated state
-    setInputValue(value)
-  }
+    setInputValue(value);
+  };
 
   console.log(inputValue);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     getDataFromSearch(inputValue);
-    console.log('form submitted');
-  }
+    console.log("form submitted");
+  };
 
+  useEffect(() => {
+    if (apiCalledSuccess) {
+      setInputValue("");
+      setapiCalledSuccess(false);
+    }
+  }, [apiCalledSuccess]);
 
   return (
-    <div className='container'>
-    <form onSubmit={handleSubmit} className='Search'>
-        <input name="search" onChange={handleInputVal} value={inputValue} placeholder="Search Recipes" id="search"/>
-        <img src="https://img.icons8.com/ios/50/E36397/search--v1.png" alt="search"/>
+    <div className="container">
+      <form onSubmit={handleSubmit} className="Search">
+        <input
+          name="search"
+          onChange={handleInputVal}
+          value={inputValue}
+          placeholder="Search Recipes"
+          id="search"
+        />
+        <img
+          src="https://img.icons8.com/ios/50/E36397/search--v1.png"
+          alt="search"
+        />
         <button type="submit">Search</button>
-    </form>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default Search
+export default Search;

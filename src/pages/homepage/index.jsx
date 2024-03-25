@@ -15,8 +15,8 @@ const Homepage = () => {
   //get fav state
   const [fav, setFav] = useState([]);
 
-  //reset search
-  
+  //state for api is success or not
+  const [apiCalledSuccess, setapiCalledSuccess] = useState(false);
 
   const getDataFromSearch = (getData) => {
     //keep the loading state as true before we call api
@@ -33,6 +33,7 @@ const Homepage = () => {
         //set loading state as false
         setLoadingState(false);
         setRecipes(results);
+        setapiCalledSuccess(true);
       }
     }
 
@@ -81,7 +82,11 @@ const Homepage = () => {
   return (
     <div className="Homepage">
       <Header />
-      <Search getDataFromSearch={getDataFromSearch} />
+      <Search
+        getDataFromSearch={getDataFromSearch}
+        apiCalledSuccess={apiCalledSuccess}
+        setapiCalledSuccess={setapiCalledSuccess}
+      />
 
       {/* show fav */}
 
