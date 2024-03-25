@@ -1,8 +1,9 @@
 import Search from "../../components/search";
 import Header from "../../components/header/header";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import "./style.css";
 import RecipeItem from "../../components/recipeItem/recipe";
+import FavItem from "../../components/FavItem/FavItem";
 
 const Homepage = () => {
   //loading state
@@ -37,33 +38,53 @@ const Homepage = () => {
 
   console.log(loadingState, receipes, "loading state and recipes");
 
+  const addToFav = (getCurrentRecipeItem) => {
+    let copyFav = [...fav];
 
-  const addToFav = (getCurrentRecipeItem) =>{
-    let copyFav = [...fav]; 
-    
-    //checking if its already present 
-    const index = copyFav.findIndex(item => item.id === getCurrentRecipeItem.id);
+    //checking if its already present
+    const index = copyFav.findIndex(
+      (item) => item.id === getCurrentRecipeItem.id
+    );
     console.log(index, "index");
 
-    if(index === -1){
+    if (index === -1) {
       //if not present then add to fav
       copyFav.push(getCurrentRecipeItem);
       setFav(copyFav);
 
       //save fav in local storage
       localStorage.setItem("favourites", JSON.stringify(copyFav));
-      
-    } else{
-      alert("Already added to favourites")
+    } else {
+      alert("Already added to favourites");
     }
   };
 
-  console.log(fav, "fav");
+  //user h0ok get data from local storage
+  useEffect(() => {
+    const extractFavFromLocal =
+      JSON.parse(localStorage.getItem("favourites")) || [];
+    setFav(extractFavFromLocal);
+  }, []);
 
   return (
     <div className="Homepage">
       <Header />
       <Search getDataFromSearch={getDataFromSearch} />
+
+      {/* show fav */}
+
+      <div className="fav-wrapper">
+        <h1>Favourites</h1>
+        <div className="favs">
+          {fav && fav.length > 0
+            ? fav.map((item) => {
+                return (
+                  <FavItem id={item.id} image={item.image} title={item.title} />
+                );
+              })
+            : null}
+        </div>
+      </div>
 
       {/* show laoding state */}
       {loadingState && <div className="Loading">Loading recipes...</div>}
@@ -72,8 +93,14 @@ const Homepage = () => {
       <div className="items">
         {receipes && receipes.length > 0
           ? receipes.map((item) => {
-              return <RecipeItem addToFav={()=>addToFav(item)} 
-              id={item.id} image={item.image} title={item.title} />;
+              return (
+                <RecipeItem
+                  addToFav={() => addToFav(item)}
+                  id={item.id}
+                  image={item.image}
+                  title={item.title}
+                />
+              );
             })
           : null}
       </div>
